@@ -1,0 +1,30 @@
+version : "3.8"
+
+services :
+
+  accounts : 
+    image : microservices/accounts:latest
+    mem_limit : 700m
+    ports : 
+      - "8080:8080"
+    networks :
+      - utsavgupta-network
+
+  cards :
+    image : microservices/cards:latest
+    mem_limit : 700m
+    ports : 
+      - "9000:9000"
+    networks : 
+      - utsavgupta-network
+
+  loans : 
+    image : microservices/loans:latest
+    mem_limit : 700m
+    ports :
+      - "8090:8090"
+    networks :
+      - utsavgupta-network
+
+networks :
+  utsavgupta-network:

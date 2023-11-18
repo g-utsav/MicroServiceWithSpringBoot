@@ -1,0 +1,73 @@
+version : "3.8"
+
+services :
+
+  configserver:
+    image : microservices/config.server:latest
+    mem_limit : 700m
+    ports : 
+      - "8071:8071"
+    networks :
+      - utsavgupta-network
+
+  accounts : 
+    image : microservices/accounts:latest
+    mem_limit : 700m
+    ports : 
+      - "8080:8080"
+    networks :
+      - utsavgupta-network
+    depends_on:
+      - configserver
+    deploy :
+      restart_policy :
+        condition : on-failure
+        delay : 10s
+        max_attempts : 3
+        window : 120s
+    environment :
+      SPRING_PROFILES_ACTIVE : prod
+      SPRING_CONFIG_IMPORT : configserver:http://configserver:8071/
+
+  cards :
+    image : microservices/cards:latest
+    mem_limit : 700m
+    ports : 
+      - "9000:9000"
+    networks : 
+      - utsavgupta-network
+    depends_on:
+      - configserver
+    deploy :
+      restart_policy :
+        condition : on-failure
+        delay : 10s
+        max_attempts : 3
+        window : 120s
+    environment :
+      SPRING_PROFILES_ACTIVE : prod
+      SPRING_CONFIG_IMPORT : configserver:http://configserver:8071/
+
+
+  loans : 
+    image : microservices/loans:latest
+    mem_limit : 700m
+    ports :
+      - "8090:8090"
+    networks :
+      - utsavgupta-network
+    depends_on:
+      - configserver
+    deploy :
+      restart_policy :
+        condition : on-failure
+        delay : 10s
+        max_attempts : 3
+        window : 120s
+    environment :
+      SPRING_PROFILES_ACTIVE : prod
+      SPRING_CONFIG_IMPORT : configserver:http://configserver:8071/
+
+
+networks :
+  utsavgupta-network:
